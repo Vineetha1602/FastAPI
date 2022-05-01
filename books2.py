@@ -22,7 +22,7 @@ class Book(BaseModel):
     description: Optional[str] = Field(title="Description of the book",
                                        max_length=100,
                                        min_length=1)
-    rating: int = Field(gt=-1, lt=101)
+    rating: int = Field(gt=-1, lt=102)
 
     class Config:
         schema_extra = {
