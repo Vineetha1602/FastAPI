@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, status, Form, Header
 from pydantic import BaseModel, Field
 from uuid import UUID
 from starlette.responses import JSONResponse
@@ -57,6 +57,26 @@ async def negative_number_exception_handler(request: Request,
     )
 
 
+# @app.post("/book/login")
+# async def books_login(username: str = Form(...), password: str = Form(...)):
+#     return {"username": username, "password": password}
+
+''' For returning book at a specific index'''
+
+
+@app.post("/book/login/modify/")
+async def books_login(book_id: int, username: Optional[str] = Header(None), password: Optional[str] = Header(None)):
+    if username == "FastAPIUser" and password == "test1234!":
+        return BOOKS[book_id]
+    else:
+        return "Invalid User"
+
+
+@app.get("/header")
+async def read_header(random_header: Optional[str] = Header(None)):
+    return {"Random-Header": random_header}
+
+
 @app.get("/")
 async def read_all_books(books_to_return: Optional[int] = None):
     if books_to_return and books_to_return < 0:
@@ -87,7 +107,7 @@ async def read_book_no_rating(book_id: UUID):
             return x
 
 
-@app.post("/")
+@app.post("/", status_code=status.HTTP_201_CREATED)
 async def create_books(book: Book):
     BOOKS.append(book)
     return book
